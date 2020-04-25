@@ -208,13 +208,16 @@ class RPCRunner(Runner):
     def set_task(self, task):
         self.task = task
 
-        if check_remote(task.target, self.key, self.host, self.port):
-            logger.info("Get devices for measurement successfully!")
+        if self.key == 'sim':
+            print("Simulator")
         else:
-            raise RuntimeError("Cannot get remote devices from the tracker. "
-                               "Please check the status of tracker by "
-                               "'python -m tvm.exec.query_rpc_tracker --port [THE PORT YOU USE]' "
-                               "and make sure you have free devices on the queue status.")
+            if check_remote(task.target, self.key, self.host, self.port):
+                logger.info("Get devices for measurement successfully!")
+            else:
+                raise RuntimeError("Cannot get remote devices from the tracker. "
+                                   "Please check the status of tracker by "
+                                   "'python -m tvm.exec.query_rpc_tracker --port [THE PORT YOU USE]' "
+                                   "and make sure you have free devices on the queue status.")
 
         if self.check_correctness:
             # use llvm cpu to generate a reference input/output
@@ -251,7 +254,7 @@ class RPCRunner(Runner):
     def run(self, measure_inputs, build_results):
         results = []
         remote_args = (self.key, self.host, self.port, self.priority, self.timeout)
-
+        print(measure_inputs, build_results)
         for i in range(0, len(measure_inputs), self.n_parallel):
             futures = []
             for measure_inp, build_res in zip(measure_inputs[i:i+self.n_parallel],
@@ -455,7 +458,7 @@ def run_through_rpc(measure_input, build_result,
     """
     if isinstance(build_result, MeasureResult):
         return build_result
-
+    print("Check Reachability")
     tic = time.time()
     errno = MeasureErrorNo.NO_ERROR
     try:

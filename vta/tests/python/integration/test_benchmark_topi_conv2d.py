@@ -193,6 +193,7 @@ def run_conv2d(env, remote, wl, target,
         # Check if we're in local RPC mode (allows us to rebuild the
         # runtime on the fly when varying the VTA designs)
         local_rpc = int(os.environ.get("VTA_LOCAL_SIM_RPC", "0"))
+        print(local_rpc)
         if local_rpc:
             print('Local RPC')
             if env.TARGET == "sim":
