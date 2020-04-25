@@ -194,6 +194,7 @@ def run_conv2d(env, remote, wl, target,
         # runtime on the fly when varying the VTA designs)
         local_rpc = int(os.environ.get("VTA_LOCAL_SIM_RPC", "0"))
         if local_rpc:
+            print('Local RPC')
             if env.TARGET == "sim":
                 remote.get_function("vta.simulator.profiler_clear")()
             else:
@@ -207,6 +208,7 @@ def run_conv2d(env, remote, wl, target,
             simulator.clear_stats()
             cost = time_f(data_arr, kernel_arr, bias_arr, res_arr)
             stats = simulator.stats()
+            print(cost, stats)
     else:
         cost = time_f(data_arr, kernel_arr, bias_arr, res_arr)
 
@@ -253,5 +255,5 @@ def test_conv2d(device):
     vta.testing.run(_run)
 
 if __name__ == "__main__":
-    test_conv2d(device="arm_cpu")
+    # test_conv2d(device="arm_cpu")
     test_conv2d(device="vta")
