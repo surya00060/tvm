@@ -47,6 +47,7 @@ from ..task.space import InstantiationError
 from .measure import MeasureResult, MeasureErrorNo, Builder, Runner
 from .local_executor import LocalExecutor
 
+# from vta.testing import simulator
 logger = logging.getLogger('autotvm')
 
 class BuildResult(namedtuple("BuildResult", ('filename', 'arg_info', 'error', 'time_cost'))):
