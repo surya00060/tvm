@@ -210,7 +210,7 @@ class RPCRunner(Runner):
         self.task = task
 
         if self.key == 'sim':
-            print("Simulator")
+            print("Simulator Entry Point")
         else:
             if check_remote(task.target, self.key, self.host, self.port):
                 logger.info("Get devices for measurement successfully!")
@@ -255,7 +255,17 @@ class RPCRunner(Runner):
     def run(self, measure_inputs, build_results):
         results = []
         remote_args = (self.key, self.host, self.port, self.priority, self.timeout)
-        print(measure_inputs, build_results)
+        print(type(measure_inputs), type(build_results))
+        print('-------------------------------------------')
+        print("Input")
+        for i in range(len(measure_inputs)):
+            print(measure_inputs[i])
+            print("----------------------------------------------------------")
+        print('-------------------------------------------')
+        print("Builded Input")
+        for i in range(len(build_results)):
+            print(build_results[i])
+            print("----------------------------------------------")  
         for i in range(0, len(measure_inputs), self.n_parallel):
             futures = []
             for measure_inp, build_res in zip(measure_inputs[i:i+self.n_parallel],
@@ -371,7 +381,10 @@ def _build_func_common(measure_input, check_gpu=None, cuda_arch=None, build_opti
             measure_input.target.device_name == 'vta':
             # pylint: disable=import-outside-toplevel
             import vta
-            func = vta.build(s, args, target_host=task.target_host)
+            with vta.build_config(debug_flag=2):
+                func = vta.build(s, args, target_host=task.target_host)
+            print('-------------------------------------------')
+            print(vta.lower(s, args))
         else:
             with build_config(**opts):
                 func = build(s, args, target_host=task.target_host)
