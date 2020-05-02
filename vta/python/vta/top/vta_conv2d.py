@@ -95,6 +95,7 @@ def schedule_conv2d_packed(cfg, outs):
     conv2d_stage = conv2d_res[0].output(0)
     s = te.create_schedule(output.op)
 
+    print( s[conv2d_stage].op.axis)
     ##### space definition begin #####
     b, c_o, x_i, x_j, _, _ = s[conv2d_stage].op.axis
     c_i, _, _, _ = s[conv2d_stage].op.reduce_axis

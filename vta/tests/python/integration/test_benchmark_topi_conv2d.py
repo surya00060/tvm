@@ -111,23 +111,26 @@ def run_conv2d(env, remote, wl, target,
     padding = relay.nn.get_pad_tuple2d((wl.hpad, wl.wpad))
 
     # Define base computation schedule
-    with target:
-        if data_pack:
-            res = conv2d_fcompute(
-                data, kernel, (wl.hstride, wl.wstride), padding, (1, 1),
-                layout, env.acc_dtype)
-        else:
-            res = conv2d_fcompute(
-                data, kernel, (wl.hstride, wl.wstride), padding, (1, 1),
-                env.acc_dtype)
-        res = topi.right_shift(res, 8)
-        res = topi.add(res, bias)
-        res = my_clip(res, 0, (1 << env.OUT_WIDTH - 1) - 1)
-        res = topi.cast(res, env.out_dtype)
-        # Derive base schedule
-        s = conv2d_fschedule([res])
-        if print_ir:
-            print(vta.lower(s, [data, kernel, bias, res], simple_mode=True))
+    #with target:
+    if data_pack:
+        res = conv2d_fcompute(
+            data, kernel, (wl.hstride, wl.wstride), padding, (1, 1),
+            layout, env.acc_dtype)
+    else:
+        res = conv2d_fcompute(
+            data, kernel, (wl.hstride, wl.wstride), padding, (1, 1),
+            env.acc_dtype)
+    res = topi.right_shift(res, 8)
+    res = topi.add(res, bias)
+    res = my_clip(res, 0, (1 << env.OUT_WIDTH - 1) - 1)
+    res = topi.cast(res, env.out_dtype)
+    # Derive base schedule
+    s = conv2d_fschedule([res])
+    if 1:
+        #print(vta.lower(s, [data, kernel, bias, res], simple_mode=True))
+        print("TVM")
+        print(tvm.lower(s, [data, kernel, bias, res], simple_mode=True))
+        exit()
 
     # Derive number of ops
     fout_height = (wl.height + 2 * wl.hpad - wl.hkernel) // wl.hstride + 1

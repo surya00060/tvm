@@ -162,6 +162,16 @@ def run_conv2d(env, remote, wl, target,
             wl.batch//env.BATCH, wl.out_filter//env.BLOCK_OUT,
             1, 1, env.BATCH, env.BLOCK_OUT)
 
+    task = autotvm.task.create("conv2d_packed.vta", args=(data, kernel, (wl.hstride, wl.wstride), padding, (1, 1),layout, env.acc_dtype), target='vta')
+    print(task)
+    print(task.config_space.get(243))
+    exit()
+    print(task.config_space)
+
+    x =(task.config_space.get(1))
+    print(x)
+    exit()
+
     # Build
     if "vta" in target.keys:
         mod = vta.build(s, [data, kernel, bias, res],
