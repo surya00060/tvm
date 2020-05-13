@@ -36,11 +36,11 @@ graph_opt_sch_file = "%s_graph_opt.log" % model_name
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(3, 32, 3)
-        self.fc1 = nn.Linear(32 * 222 * 222, 10)
+        self.conv1 = nn.Conv2d(3, 7, 5,stride = 2,padding = 4)
+        self.fc1 = nn.Linear(90972, 10)
     def forward(self, x):
         x = F.relu(self.conv1(x))
-        x = x.view(-1, 1577088)
+        x = x.view(-1, 90972)
         x = F.softmax(self.fc1(x),dim = 1)
         return x
 
@@ -84,13 +84,26 @@ def get_network(name, batch_size):
 
 
 
-def tune(t):
-    Workload = namedtuple("Conv2DWorkload",
-                      ['batch', 'height', 'width', 'in_filter', 'out_filter',
-                       'hkernel', 'wkernel', 'hpad', 'wpad', 'hstride', 'wstride'])
-    
-    print(t)
 
+
+def parse(t):
+    #print(t)
+    N,C,H,W = t.args[0][1]
+
+    M,_,R,S = t.args[1][1]
+
+    Sx,Sy = t.args[2]
+
+    pad_t, pad_l, pad_r, pad_b = t.args[3]
+
+    assert pad_r == pad_l
+    assert pad_b == pad_t
+    #print(t.workload())
+    print(t.args)
+    E = ((H+ 2*pad_t - R)//Sx) + 1
+    F = ((W+ 2*pad_l - S)//Sy) + 1
+
+    return N,C,H,W,R,S,M,E,F,Sx,Sy,pad_l,pad_t
 
 def tune_and_evaluate():
     # extract workloads from relay program
@@ -100,15 +113,57 @@ def tune_and_evaluate():
                                               params=params,
                                               ops=(relay.op.get("nn.conv2d"),))
 
+    env = vta.get_env()
 
+    print(mod["main"])
+       
     for t in tasks:
-        with env.target_vta_cpu : 
-            print(t.config_space)
-            print(t.__class__.__name__)
-            s, args = t.instantiate(t.config_space.get(1))
-            print(s)
-            print(args)
-            print(tvm.lower(s, args, simple_mode=True))
+        with env.target: 
+            N,C,H,W,R,S,M,E,F,Sx,Sy,Px,Py = parse(t)
+            print("N : ",N)
+            print("C : ",C)
+            print("H : ",H)
+            print("W : ",W)
+
+            print("R : ",R)
+            print("S : ",S)
+            print("M : ",M)
+
+            print("E : ",E)
+            print("F : ",F)
+            print("Sx : ",Sx)
+            print("Sy : ",Sy)
+            print("Px : ",Px)
+            print("Py : ",Py)
+
+            #print(t.config_space)
+            #print(t)
+            
+            for i in range(113):
+                print(t.config_space.get(i).to_json_dict()['entity'][2])
+                d = t.config_space.get(i).to_json_dict()['entity']
+                tile_C = [C//d[0][-1][-1],d[0][-1][-1]]
+                tile_M = [M//d[1][-1][-1],d[1][-1][-1]]
+                tile_E = [E//d[2][-1][-1],d[2][-1][-1]]
+                tile_F = [F//d[3][-1][-1],d[3][-1][-1]]
+                print("tile_C : ",tile_C)
+                print("tile_M : ",tile_M)
+                print("tile_E : ",tile_E)
+                print("tile_F : ",tile_F)
+                
+
+            #exit()
+            s, args = t.instantiate(t.config_space.get(4))
+            #print(s)
+            print(args[0].shape)
+            print(args[1])
+            print(args[2])
+
+            
+
+
+            #print(tvm.lower(s, args, simple_mode=True))
+            
         
     exit()
 
