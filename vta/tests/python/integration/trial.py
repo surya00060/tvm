@@ -154,7 +154,7 @@ def tune_and_evaluate():
                 print("tile_E : ",tile_E)
                 print("tile_F : ",tile_F)
                 TileParams = [tile_C,tile_E,tile_F,tile_M]
-                lowered = mapper(ConvParams,TileParams)
+                lowered = mapper(ConvParams,TileParams,"conv")
                 
 
             #exit()

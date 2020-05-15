@@ -1,6 +1,6 @@
 import numpy as np 
 
-def systolic_fold_conv(ConvParams,TileParams,tile_pos):
+def systolic_fold_conv(ConvParams,TileParams,tile_pos,):
     N,C,H,W = ConvParams[0]
     R,S,M   = ConvParams[1]
     E,F     = ConvParams[2]
@@ -41,8 +41,11 @@ def systolic_fold_conv(ConvParams,TileParams,tile_pos):
     return ""
 
 
-def mapper(ConvParams, TileParams):
-    N       = ConvParams[0,0]
+def mapper(ConvParams, TileParams,op):
+    #TEMPORARY CODE Begin
+    assert op = "conv"
+    #TEMPORARY CODE End
+    N    = ConvParams[0,0]
     C1,C2   = TileParams[0]
     M1,M2   = TileParams[1]
     E1,E2   = TileParams[2]
@@ -51,7 +54,6 @@ def mapper(ConvParams, TileParams):
 
     lower = ""
     #TODO Check illegal configurations
-
     #Lets just see 1 tile first :
     for n in range(N):
         for c in range(C1):
