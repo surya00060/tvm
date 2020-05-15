@@ -19,8 +19,6 @@ def systolic_fold_conv(ConvParams,TileParams,tile_pos,):
     What the solution might look like(Initial Draw up)
     Load input : 
         Find expression for which slice of the input to load, using the parameters above
-    Load partial sum of output in buffers/0 : 
-        Find expression for which slice of the output to load, using the parameters above
     Load weights in the systolic:
         Find expression for which slice of the input to load, using the parameters above 
     Compute Systolic.:
