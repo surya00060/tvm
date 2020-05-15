@@ -21,6 +21,7 @@ from vta import program_fpga, reconfig_runtime
 import vta.testing
 from vta.testing import simulator
 
+from mapper import mapper
 
 env = vta.get_env()
 
@@ -83,9 +84,6 @@ def get_network(name, batch_size):
     return mod, params, input_shape, output_shape
 
 
-
-
-
 def parse(t):
     #print(t)
     N,C,H,W = t.args[0][1]
@@ -114,8 +112,6 @@ def tune_and_evaluate():
                                               ops=(relay.op.get("nn.conv2d"),))
 
     env = vta.get_env()
-
-    print(mod["main"])
        
     for t in tasks:
         with env.target: 
@@ -136,11 +132,18 @@ def tune_and_evaluate():
             print("Px : ",Px)
             print("Py : ",Py)
 
+            NCHW = [N,C,H,W]
+            RSM  = [R,S,M]
+            EF   = [E,F]
+            S    = [Sx,Sy]
+            P    = [Px,Py]
+
+            ConvParams = [NCHW, RSM , EF , S , P]
+
             #print(t.config_space)
             #print(t)
             
             for i in range(113):
-                print(t.config_space.get(i).to_json_dict()['entity'][2])
                 d = t.config_space.get(i).to_json_dict()['entity']
                 tile_C = [C//d[0][-1][-1],d[0][-1][-1]]
                 tile_M = [M//d[1][-1][-1],d[1][-1][-1]]
@@ -150,6 +153,8 @@ def tune_and_evaluate():
                 print("tile_M : ",tile_M)
                 print("tile_E : ",tile_E)
                 print("tile_F : ",tile_F)
+                TileParams = [tile_C,tile_E,tile_F,tile_M]
+                lowered = mapper(ConvParams,TileParams)
                 
 
             #exit()
