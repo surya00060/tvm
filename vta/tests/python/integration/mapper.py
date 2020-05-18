@@ -1,5 +1,34 @@
 import numpy as np 
 
+
+
+'''
+Surya
+Assumption:
+Since Weight Stationary Implementation requires more psum accumulation, the output buffer size needs to be more. 
+Refer : Scale Sim, Eyeriss
+Input Layout: NHWC
+Weight Layout: RSCM
+
+Fixing a Loop Order: R -> S -> C -> M -> N -> H -> W
+Tilable: H, W, C, M
+
+Approach:
+1. Load Weights to Systolic Array
+    Opitmal Approach: Fix C' and M' to the systolic dimensions so that all except the last fold is fully utilized.
+    Exploration: 
+        Invalid: Declare all configurations having C' * M' greater than Weight buffer size as Invalid.
+        Valid: But will be underutilized.
+
+2. Load Input Tensor
+    C' is Fixed in previous step.
+    Exploration: 
+        Invalid: Declare all configurations having C' * W' * H' greater than Input buffer size as Invalid.
+        Valid: ~  
+
+Concern: Partial Sum Logic
+'''
+
 def systolic_fold_conv(ConvParams,TileParams,tile_pos,):
     N,C,H,W = ConvParams[0]
     R,S,M   = ConvParams[1]
