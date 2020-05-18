@@ -101,7 +101,7 @@ def parse(t):
     E = ((H+ 2*pad_t - R)//Sx) + 1
     F = ((W+ 2*pad_l - S)//Sy) + 1
 
-    return N,C,H,W,R,S,M,E,F,Sx,Sy,pad_l,pad_t
+    return N,C,H,W,R,S,M,E,F,Sx,Sy,pad_l,pad_r,pad_t,pad_b
 
 def tune_and_evaluate():
     # extract workloads from relay program
@@ -115,7 +115,7 @@ def tune_and_evaluate():
        
     for t in tasks:
         with env.target: 
-            N,C,H,W,R,S,M,E,F,Sx,Sy,Px,Py = parse(t)
+            N,C,H,W,R,S,M,E,F,Sx,Sy,Pxl,Pxr,Pyt,Pyb = parse(t)
             print("N : ",N)
             print("C : ",C)
             print("H : ",H)
@@ -129,14 +129,16 @@ def tune_and_evaluate():
             print("F : ",F)
             print("Sx : ",Sx)
             print("Sy : ",Sy)
-            print("Px : ",Px)
-            print("Py : ",Py)
+            print("Pxl : ",Pxl)
+            print("Pxr : ",Pxr)
+            print("Pyl : ",Pyt)
+            print("Pyr : ",Pyb)
 
             NCHW = [N,C,H,W]
             RSM  = [R,S,M]
             EF   = [E,F]
             S    = [Sx,Sy]
-            P    = [Px,Py]
+            P    = [Pxl,Pxr,Pyt,Pyb]
 
             ConvParams = [NCHW, RSM , EF , S , P]
 
