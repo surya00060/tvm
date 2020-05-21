@@ -159,10 +159,12 @@ def tune_and_evaluate():
                 tile_M = [M//d[1][-1][-1],d[1][-1][-1]]
                 tile_E = [E//d[2][-1][-1],d[2][-1][-1]]
                 tile_F = [F//d[3][-1][-1],d[3][-1][-1]]
+                '''
                 print("tile_C : ",tile_C)
                 print("tile_M : ",tile_M)
                 print("tile_E : ",tile_E)
                 print("tile_F : ",tile_F)
+                '''
                 TileParams = [tile_C,tile_E,tile_F,tile_M]
                 lowered,validity = mapper(ConvParams,TileParams,"conv")
                 if(validity == 0): 

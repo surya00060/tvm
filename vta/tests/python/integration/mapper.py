@@ -30,9 +30,23 @@ Concern: Partial Sum Logic
 '''
 
 
-def gen_load_weight_instr(DRAM=0,SRAM=0,Z_SIZE = 0,Z_STRIDE = 1,Y_SIZE = 0, Y_STRIDE = 1, X_SIZE = 0, RESET = 0):
+def gen_load_instr(DRAM=0,SRAM=0,Z_SIZE = 0,Z_STRIDE = 1,Y_SIZE = 0, Y_STRIDE = 1, X_SIZE = 0, RESET = 0):
 
     insn = "Load, " + " DRAM  = " + str(DRAM) + " SRAM  = " + str(SRAM) + " Z_SIZE  = " + str(Z_SIZE) + " Z_STRIDE  = " + str(Z_STRIDE) + " Y_SIZE  = " + str(Y_SIZE) + " Y_STRIDE  = " + str(Y_STRIDE) + " X_SIZE = " + str(X_SIZE) + " RESET = " + str(RESET)   
+
+    return insn
+
+def gen_compute_instr(  input  = 0,
+                        output = 0,
+                        weight = 0,
+                        H = 0,
+                        W = 0,
+                        Stride = [1,1],
+                        Pad = [0,0,0,0],
+                        preload = 0):
+
+    insn = "Compute " + " input  = " + str(input) + " output  = " + str(output) + " weight  = " + str(weight) + " H  = " + str(H) + " W  = " + str(W) + " Stride  = [" + str(Stride[0]) + "," + str(Stride[1]) + \
+           "] Pad = [ " + str(Pad[0]) + "," + str(Pad[1]) + "," + str(Pad[2]) + "," + str(Pad[3]) + "]"   + " preload = " + str(preload)   
 
     return insn
 
@@ -48,7 +62,6 @@ def systolic_fold_conv(ConvParams,TileParams,):
     M1,M2   = TileParams[1]
     E1,E2   = TileParams[2]
     F1,F2   = TileParams[3]
-    
     
     #Now we have to deal with the inputs
 
@@ -140,29 +153,31 @@ def mapper(ConvParams, TileParams,op):
     NUM_COLS = 64
 
 
-    WEIGHT_BUFFER_SIZE = 32000/32
+    WEIGHT_BUFFER_SIZE = 1e6
 
-    INPUT_BUFFER_SIZE = 32000/32
+    INPUT_BUFFER_SIZE = 1e6
 
-    OUTPUT_BUFFER_SIZE = 32000/32
+    OUTPUT_BUFFER_SIZE = 1e6
     
     if(C2 > NUM_ROWS):
+        print("C2 too high")
         return "", 0
     if(M2 > NUM_COLS):
+        print("M2 too high")
         return "", 0
-    
-
 
     if(WEIGHT_BUFFER_SIZE < C2*M2):
+        print("Weight buffers too small")
         return "",0
 
     if(INPUT_BUFFER_SIZE < N * C2 * E2 * F2):
+        print("Input Buffer too small")
         return "", 0
     
     if(OUTPUT_BUFFER_SIZE < N * E1*E2 * F1*F2 * M1*M2):
+        print("Output Buffer too small")
         return "",0
-
-    
+        
     lower = ""
     #TODO Check illegal configurations
 
