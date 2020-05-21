@@ -29,12 +29,20 @@ Approach:
 Concern: Partial Sum Logic
 '''
 
-def systolic_fold_conv(ConvParams,TileParams,tile_pos,):
+
+def gen_load_weight_instr(DRAM=0,SRAM=0,Z_SIZE = 0,Z_STRIDE = 1,Y_SIZE = 0, Y_STRIDE = 1, X_SIZE = 0, RESET = 0):
+
+    insn = "Load, " + " DRAM  = " + str(DRAM) + " SRAM  = " + str(SRAM) + " Z_SIZE  = " + str(Z_SIZE) + " Z_STRIDE  = " + str(Z_STRIDE) + " Y_SIZE  = " + str(Y_SIZE) + " Y_STRIDE  = " + str(Y_STRIDE) + " X_SIZE = " + str(X_SIZE) + " RESET = " + str(RESET)   
+
+    return insn
+
+
+def systolic_fold_conv(ConvParams,TileParams,):
     N,C,H,W = ConvParams[0]
     R,S,M   = ConvParams[1]
     E,F     = ConvParams[2]
     Sx,Sy   = ConvParams[3]
-    P_left,P_right,Py   = ConvParams[4]
+    P_left,P_right,P_top,P_bottom   = ConvParams[4]
 
     C1,C2   = TileParams[0]
     M1,M2   = TileParams[1]
@@ -74,6 +82,7 @@ def systolic_fold_conv(ConvParams,TileParams,tile_pos,):
     Output Channels map to columns of systolic
     Weight stationary Implementation, fixes ordering for some loops
     '''
+
     #ASSUMPTION : OUTPUT FITS ON BUFFER
     #The next 2 loops are interchangable
     for r in range(R):
@@ -82,14 +91,15 @@ def systolic_fold_conv(ConvParams,TileParams,tile_pos,):
             for c1 in range(C1):
                 for m1 in range(M1):
                     # in the systolic element i(row) ,j(column)
-                    # Load Weight[r,s,i,j] #RSCM
+                    # Load Weight[r,s, c1*C2 + i, m1*M2 + j] #RSCM
+
                     for e1 in range(E1):
                         for f1 in range(F1):
                             #Load input [
                             #               N,
                             #               c1*C2<C<(c1+1)*C2,
                             #               (e1*E2) + r*Sx < H < (e1*E2+E2) + r*Sx,
-                            #               (f1*f2) + s*Sy < W < (f1*F2+F2) + s*Sy  
+                            #               (f1*F2) + s*Sy < W < (f1*F2+F2) + s*Sy  
                             #           ]
                             
                             #Compute
@@ -111,28 +121,53 @@ def systolic_fold_conv(ConvParams,TileParams,tile_pos,):
             # so in the element i,j, you have Weight(j , i, r , s) (in MCRS fashion, (Not sure if this is the convention we have to follow))
 
 
-
-
-    
-
     return ""
 
 
 def mapper(ConvParams, TileParams,op):
     #TEMPORARY CODE Begin
-    assert op = "conv"
+    assert op == "conv"
     #TEMPORARY CODE End
-    N    = ConvParams[0,0]
+    N    = ConvParams[0][0]
     C1,C2   = TileParams[0]
     M1,M2   = TileParams[1]
     E1,E2   = TileParams[2]
     F1,F2   = TileParams[3]
 
+    #Add read from file functionality here
 
+    NUM_ROWS = 64
+    NUM_COLS = 64
+
+
+    WEIGHT_BUFFER_SIZE = 32000/32
+
+    INPUT_BUFFER_SIZE = 32000/32
+
+    OUTPUT_BUFFER_SIZE = 32000/32
+    
+    if(C2 > NUM_ROWS):
+        return "", 0
+    if(M2 > NUM_COLS):
+        return "", 0
+    
+
+
+    if(WEIGHT_BUFFER_SIZE < C2*M2):
+        return "",0
+
+    if(INPUT_BUFFER_SIZE < N * C2 * E2 * F2):
+        return "", 0
+    
+    if(OUTPUT_BUFFER_SIZE < N * E1*E2 * F1*F2 * M1*M2):
+        return "",0
+
+    
     lower = ""
     #TODO Check illegal configurations
 
     #Lets just see 1 tile first :
+    '''
     for n in range(N):
         for m in range(M1):
             for e in range(E1):
@@ -140,7 +175,10 @@ def mapper(ConvParams, TileParams,op):
                     #Output = 0 here
                     for c in range(C1):
                         tile_pos = [n,c,m,e,f]
-    lower += systolic_fold_conv(ConvParams,TileParams,tile_pos)
+    '''
+    lower += systolic_fold_conv(ConvParams,TileParams)
+
+    validity = 1
 
                     #Flush outputs here
 
@@ -150,4 +188,4 @@ def mapper(ConvParams, TileParams,op):
 
 
 
-    return lower
+    return lower,validity

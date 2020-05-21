@@ -103,6 +103,13 @@ def parse(t):
 
     return N,C,H,W,R,S,M,E,F,Sx,Sy,pad_l,pad_r,pad_t,pad_b
 
+
+#Empty function, to be replaced by the simulator later
+def Run(lowered):
+    time = 0
+    return time
+
+
 def tune_and_evaluate():
     # extract workloads from relay program
     print("Extract tasks...")
@@ -142,10 +149,11 @@ def tune_and_evaluate():
 
             ConvParams = [NCHW, RSM , EF , S , P]
 
-            #print(t.config_space)
+            print(t.config_space.__len__())
             #print(t)
             
-            for i in range(113):
+            best_time = 1e9
+            for i in range(t.config_space.__len__()):
                 d = t.config_space.get(i).to_json_dict()['entity']
                 tile_C = [C//d[0][-1][-1],d[0][-1][-1]]
                 tile_M = [M//d[1][-1][-1],d[1][-1][-1]]
@@ -156,15 +164,25 @@ def tune_and_evaluate():
                 print("tile_E : ",tile_E)
                 print("tile_F : ",tile_F)
                 TileParams = [tile_C,tile_E,tile_F,tile_M]
-                lowered = mapper(ConvParams,TileParams,"conv")
-                
+                lowered,validity = mapper(ConvParams,TileParams,"conv")
+                if(validity == 0): 
+                    continue      
+                time = Run(lowered)
 
+                if(time < best_time):
+                    best_time = time
+                    best_index = i
+            
+
+            '''
             #exit()
             s, args = t.instantiate(t.config_space.get(4))
             #print(s)
             print(args[0].shape)
             print(args[1])
             print(args[2])
+
+            '''
 
             
 
