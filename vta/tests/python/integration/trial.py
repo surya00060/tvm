@@ -114,6 +114,8 @@ def tune_and_evaluate():
     # extract workloads from relay program
     print("Extract tasks...")
     mod, params, data_shape, out_shape = get_network("mxnet",1)
+    print(params)
+    exit()
     tasks = autotvm.task.extract_from_program(mod["main"], target=target,
                                               params=params,
                                               ops=(relay.op.get("nn.conv2d"),))
