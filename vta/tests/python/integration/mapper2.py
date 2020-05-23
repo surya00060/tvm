@@ -2,16 +2,42 @@ import numpy as np
 
 def gen_load_instr(DRAM=0,SRAM=0,Z_SIZE = 0,Z_STRIDE = 1,Y_SIZE = 0, Y_STRIDE = 1, X_SIZE = 0, RESET = 0):
 
-    insn = "Load, " + " DRAM  = " + str(DRAM) + " SRAM  = " + str(SRAM) + " Z_SIZE  = " + str(Z_SIZE) + " Z_STRIDE  = " + str(Z_STRIDE) + " Y_SIZE  = " + str(Y_SIZE) + " Y_STRIDE  = " + str(Y_STRIDE) + " X_SIZE = " + str(X_SIZE) + " RESET = " + str(RESET)  + "\n" 
-
+    # insn = "Load, " + " DRAM  = " + str(DRAM) + " SRAM  = " + str(SRAM) + " Z_SIZE  = " + str(Z_SIZE) + " Z_STRIDE  = " + str(Z_STRIDE) + " Y_SIZE  = " + str(Y_SIZE) + " Y_STRIDE  = " + str(Y_STRIDE) + " X_SIZE = " + str(X_SIZE) + " RESET = " + str(RESET)  + "\n" 
+    insn = {'type': 'load',
+            'pop_prev_dep':0,
+            'pop_next_dep':0,
+            'push_prev_dep':0,
+            'push_next_dep':0,
+            'DRAM':DRAM,
+            'SRAM':SRAM,
+            'Z_SIZE': Z_SIZE,
+            'Z_STRIDE': Z_STRIDE,
+            'Y_SIZE': Y_SIZE,
+            'Y_STRIDE': Y_STRIDE,  
+            'X_SIZE': X_SIZE,
+            'RESET':RESET,
+    }
     return insn
 
 def gen_store_instr(DRAM=0,SRAM=0,Z_SIZE = 0,Z_STRIDE = 1,Y_SIZE = 0, Y_STRIDE = 1, X_SIZE = 0, RESET = 0):
 
-    insn = "Store, " + " DRAM  = " + str(DRAM) + " SRAM  = " + str(SRAM) + " Z_SIZE  = " + str(Z_SIZE) + " Z_STRIDE  = " + str(Z_STRIDE) + " Y_SIZE  = " + str(Y_SIZE) + " Y_STRIDE  = " + str(Y_STRIDE) + " X_SIZE = " + str(X_SIZE) + " RESET = " + str(RESET)  + "\n" 
-
+    # insn = "Store, " + " DRAM  = " + str(DRAM) + " SRAM  = " + str(SRAM) + " Z_SIZE  = " + str(Z_SIZE) + " Z_STRIDE  = " + str(Z_STRIDE) + " Y_SIZE  = " + str(Y_SIZE) + " Y_STRIDE  = " + str(Y_STRIDE) + " X_SIZE = " + str(X_SIZE) + " RESET = " + str(RESET)  + "\n" 
+    insn = {'type': 'store',
+            'pop_prev_dep':1,
+            'pop_next_dep':0,
+            'push_prev_dep':0,
+            'push_next_dep':0,
+            'DRAM':DRAM,
+            'SRAM':SRAM,
+            'Z_SIZE': Z_SIZE,
+            'Z_STRIDE': Z_STRIDE,
+            'Y_SIZE': Y_SIZE,
+            'Y_STRIDE': Y_STRIDE,  
+            'X_SIZE': X_SIZE,
+            'RESET':RESET,
+    }
     return insn
-
+    
 def gen_compute_instr(  input  = 0,
                         output = 0,
                         weight = 0,
@@ -21,9 +47,23 @@ def gen_compute_instr(  input  = 0,
                         Pad = [0,0,0,0],
                         preload = 0):
 
-    insn = "Compute " + " input  = " + str(input) + " output  = " + str(output) + " weight  = " + str(weight) + " H  = " + str(H) + " W  = " + str(W) + " Stride  = [" + str(Stride[0]) + "," + str(Stride[1]) + \
-           "] Pad = [ " + str(Pad[0]) + "," + str(Pad[1]) + "," + str(Pad[2]) + "," + str(Pad[3]) + "]"   + " preload = " + str(preload)   + "\n"
-
+    # insn = "Compute " + " input  = " + str(input) + " output  = " + str(output) + " weight  = " + str(weight) + " H  = " + str(H) + " W  = " + str(W) + " Stride  = [" + str(Stride[0]) + "," + str(Stride[1]) + \
+    #       "] Pad = [ " + str(Pad[0]) + "," + str(Pad[1]) + "," + str(Pad[2]) + "," + str(Pad[3]) + "]"   + " preload = " + str(preload)   + "\n"
+    # print('compute')                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+    insn = {'type': 'compute',
+            'pop_prev_dep':1,
+            'pop_next_dep':0,
+            'push_prev_dep':0,
+            'push_next_dep':0,
+            'input': input,
+            'output':output,
+            'weight':weight,
+            'H':H,
+            'W':W,
+            'Stride': Stride,
+            'Pad':Pad,
+            'preload':preload,
+    }
     return insn
 
 
@@ -32,7 +72,7 @@ def gen_compute_instr(  input  = 0,
 def mapper(ConvParams, TileParams,op):
     assert op == "conv"
     #TEMPORARY CODE End
-
+    print(TileParams, ConvParams)
     N,C,H,W             = ConvParams[0]
     R,S,M               = ConvParams[1]
     E,F                 = ConvParams[2]
@@ -94,7 +134,6 @@ def mapper(ConvParams, TileParams,op):
     SRAM_output_base = 0
 
     code = []
-
     for n in range(N):
         for e1 in range(E1):
             for f1 in range(F1):
@@ -122,6 +161,17 @@ def mapper(ConvParams, TileParams,op):
                 store_output = gen_store_instr(DRAM=curr_output_ptr,SRAM = SRAM_output_base,Z_SIZE=M2,Y_SIZE=E2,X_SIZE=F2) #Not sure is E2 and F2 need to be reordered here
 
                 code.append(store_output)
+
+    #Depedency Flags
+    #Corrently added for one layer
+    for i in range((len(code)-1)):
+        if code[i]['type'] == 'load' and code[i+1]['type'] == 'compute':
+            code[i]['push_next_dep'] = 1
+            code[i+1]['pop_prev_dep'] = 1 #Obvious
+        
+        elif code[i]['type'] == 'compute' and code[i+1]['type'] == 'store':
+            code[i]['push_next_dep'] = 1
+            code[i+1]['pop_prev_dep'] = 1 #Obvious
 
     return code
 
