@@ -21,7 +21,7 @@ from vta import program_fpga, reconfig_runtime
 import vta.testing
 from vta.testing import simulator
 
-from mapper import mapper
+from mapper2 import mapper
 
 env = vta.get_env()
 

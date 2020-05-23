@@ -115,7 +115,7 @@ def mapper(ConvParams, TileParams,op):
 
                                 code.append(load_input)
 
-                                compute_instr = gen_compute_instr(input=SRAM_input_base,output = SRAM_output_base,weight = SRAM_weight_base,H=E2,W =F2,Stride=ConvParams[3],Pad=ConvParams[4],preload = (c1==0)) #This means load 0s/flush output
+                                compute_instr = gen_compute_instr(input=SRAM_input_base,output = SRAM_output_base,weight = SRAM_weight_base,H=E2,W =F2,Stride=[1,1],Pad=ConvParams[4],preload = (c1==0)) #This means load 0s/flush output
                                 code.append(compute_instr)
                 
                 curr_output_ptr = curr_layer_DRAM_output_ptr + n*M*E*F + m1*M2*E*F + e1*E2*F + f1*F2
