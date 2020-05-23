@@ -111,7 +111,7 @@ def mapper(ConvParams, TileParams,op):
 
 
                                 curr_input_ptr = curr_layer_DRAM_input_ptr + n*C*H*W + c1*C2*H*W + ((e1*E2) + r*Sx)*W + (f1*F2) + s*Sy
-                                load_input = gen_load_instr(DRAM = curr_input_ptr, SRAM = SRAM_input_base,Z_SIZE=C2,Y_SIZE=F2,X_SIZE=E2) #Not sure is E2 and X2 need to be reordered here
+                                load_input = gen_load_instr(DRAM = curr_input_ptr, SRAM = SRAM_input_base,Z_SIZE=C2,Y_SIZE=E2,X_SIZE=F2) #Not sure is E2 and F2 need to be reordered here
 
                                 code.append(load_input)
 
@@ -119,7 +119,7 @@ def mapper(ConvParams, TileParams,op):
                                 code.append(compute_instr)
                 
                 curr_output_ptr = curr_layer_DRAM_output_ptr + n*M*E*F + m1*M2*E*F + e1*E2*F + f1*F2
-                store_output = gen_store_instr(DRAM=curr_output_ptr,SRAM = SRAM_output_base,Z_SIZE=M2,Y_SIZE=F2,X_SIZE=E2)
+                store_output = gen_store_instr(DRAM=curr_output_ptr,SRAM = SRAM_output_base,Z_SIZE=M2,Y_SIZE=E2,X_SIZE=F2) #Not sure is E2 and F2 need to be reordered here
 
                 code.append(store_output)
 
