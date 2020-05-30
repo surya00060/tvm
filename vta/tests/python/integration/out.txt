@@ -1,0 +1,952 @@
+Extract tasks...
+{
+  "root": 1, 
+  "nodes": [
+    {
+      "type_key": ""
+    }, 
+    {
+      "type_key": "relay.Function", 
+      "attrs": {
+        "_checked_type_": "138", 
+        "attrs": "0", 
+        "body": "34", 
+        "params": "2", 
+        "ret_type": "131", 
+        "span": "0", 
+        "type_params": "137"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3, 11, 19, 23, 29]
+    }, 
+    {
+      "type_key": "relay.Var", 
+      "attrs": {
+        "_checked_type_": "5", 
+        "span": "0", 
+        "type_annotation": "5", 
+        "vid": "4"
+      }
+    }, 
+    {
+      "type_key": "relay.Id", 
+      "attrs": {"name_hint": "input0"}
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "6", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [7, 8, 9, 10]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "64"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "64"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "64"
+      }
+    }, 
+    {
+      "type_key": "relay.Var", 
+      "attrs": {
+        "_checked_type_": "13", 
+        "span": "0", 
+        "type_annotation": "13", 
+        "vid": "12"
+      }
+    }, 
+    {
+      "type_key": "relay.Id", 
+      "attrs": {"name_hint": "weight.1"}
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "14", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [15, 16, 17, 18]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "64"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "64"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "3"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "3"
+      }
+    }, 
+    {
+      "type_key": "relay.Var", 
+      "attrs": {
+        "_checked_type_": "21", 
+        "span": "0", 
+        "type_annotation": "21", 
+        "vid": "20"
+      }
+    }, 
+    {
+      "type_key": "relay.Id", 
+      "attrs": {"name_hint": "4"}
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "22", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [15]
+    }, 
+    {
+      "type_key": "relay.Var", 
+      "attrs": {
+        "_checked_type_": "25", 
+        "span": "0", 
+        "type_annotation": "25", 
+        "vid": "24"
+      }
+    }, 
+    {
+      "type_key": "relay.Id", 
+      "attrs": {"name_hint": "weight"}
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "26", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [27, 28]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "10"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "65536"
+      }
+    }, 
+    {
+      "type_key": "relay.Var", 
+      "attrs": {
+        "_checked_type_": "31", 
+        "span": "0", 
+        "type_annotation": "31", 
+        "vid": "30"
+      }
+    }, 
+    {
+      "type_key": "relay.Id", 
+      "attrs": {"name_hint": "bias"}
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "32", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [33]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "10"
+      }
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "131", 
+        "args": "36", 
+        "attrs": "135", 
+        "op": "35", 
+        "span": "0", 
+        "type_args": "136"
+      }
+    }, 
+    {
+      "type_key": "relay.Op", 
+      "repr_str": "nn.softmax"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [37]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "131", 
+        "args": "39", 
+        "attrs": "133", 
+        "op": "38", 
+        "span": "0", 
+        "type_args": "134"
+      }
+    }, 
+    {
+      "type_key": "relay.Op", 
+      "repr_str": "nn.bias_add"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [40, 29]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "131", 
+        "args": "42", 
+        "attrs": "129", 
+        "op": "41", 
+        "span": "0", 
+        "type_args": "130"
+      }
+    }, 
+    {
+      "type_key": "relay.Op", 
+      "repr_str": "nn.dense"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [43, 102]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "100", 
+        "args": "45", 
+        "attrs": "0", 
+        "op": "44", 
+        "span": "0", 
+        "type_args": "99"
+      }
+    }, 
+    {
+      "type_key": "relay.Op", 
+      "repr_str": "multiply"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [46, 96]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "93", 
+        "args": "48", 
+        "attrs": "88", 
+        "op": "47", 
+        "span": "0", 
+        "type_args": "92"
+      }
+    }, 
+    {
+      "type_key": "relay.Op", 
+      "repr_str": "reshape"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [49]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "86", 
+        "args": "51", 
+        "attrs": "81", 
+        "op": "50", 
+        "span": "0", 
+        "type_args": "85"
+      }
+    }, 
+    {
+      "type_key": "relay.Op", 
+      "repr_str": "nn.adaptive_max_pool2d"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [52]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "74", 
+        "args": "54", 
+        "attrs": "0", 
+        "op": "53", 
+        "span": "0", 
+        "type_args": "80"
+      }
+    }, 
+    {
+      "type_key": "relay.Op", 
+      "repr_str": "nn.relu"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [55]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "74", 
+        "args": "56", 
+        "attrs": "78", 
+        "op": "38", 
+        "span": "0", 
+        "type_args": "79"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [57, 19]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "74", 
+        "args": "59", 
+        "attrs": "60", 
+        "op": "58", 
+        "span": "0", 
+        "type_args": "73"
+      }
+    }, 
+    {
+      "type_key": "relay.Op", 
+      "repr_str": "nn.conv2d"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [3, 11]
+    }, 
+    {
+      "type_key": "relay.attrs.Conv2DAttrs", 
+      "attrs": {
+        "channels": "15", 
+        "data_layout": "NCHW", 
+        "dilation": "69", 
+        "groups": "1", 
+        "kernel_layout": "OIHW", 
+        "kernel_size": "72", 
+        "out_dtype": "", 
+        "out_layout": "", 
+        "padding": "64", 
+        "strides": "61"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [62, 63]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [65, 66, 67, 68]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [70, 71]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [17, 18]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [5, 13]
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "75", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [7, 15, 76, 77]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "64"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "64"
+      }
+    }, 
+    {
+      "type_key": "relay.attrs.BiasAddAttrs", 
+      "attrs": {"axis": "1"}
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [74, 21]
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [74]
+    }, 
+    {
+      "type_key": "relay.attrs.AdaptivePool2DAttrs", 
+      "attrs": {
+        "layout": "NCHW", 
+        "output_size": "82"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [83, 84]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "32"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "32"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [74]
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "87", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [7, 15, 83, 84]
+    }, 
+    {
+      "type_key": "relay.attrs.ReshapeAttrs", 
+      "attrs": {
+        "newshape": "89", 
+        "reverse": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [90, 91]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "-1"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "65536"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [86]
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "94", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [95, 91]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "97", 
+        "data": "0", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "98", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [93, 97]
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "101", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [95, 91]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "127", 
+        "args": "104", 
+        "attrs": "122", 
+        "op": "103", 
+        "span": "0", 
+        "type_args": "126"
+      }
+    }, 
+    {
+      "type_key": "relay.Op", 
+      "repr_str": "transpose"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [105]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "120", 
+        "args": "106", 
+        "attrs": "0", 
+        "op": "44", 
+        "span": "0", 
+        "type_args": "119"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [107, 116]
+    }, 
+    {
+      "type_key": "relay.Call", 
+      "attrs": {
+        "_checked_type_": "114", 
+        "args": "108", 
+        "attrs": "109", 
+        "op": "103", 
+        "span": "0", 
+        "type_args": "113"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [23]
+    }, 
+    {
+      "type_key": "relay.attrs.TransposeAttrs", 
+      "attrs": {"axes": "110"}
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [111, 112]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [25]
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "115", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [28, 27]
+    }, 
+    {
+      "type_key": "relay.Constant", 
+      "attrs": {
+        "_checked_type_": "117", 
+        "data": "1", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "118", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array"
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [114, 117]
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "121", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [28, 27]
+    }, 
+    {
+      "type_key": "relay.attrs.TransposeAttrs", 
+      "attrs": {"axes": "123"}
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [124, 125]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "1"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [120]
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "128", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [33, 91]
+    }, 
+    {
+      "type_key": "relay.attrs.DenseAttrs", 
+      "attrs": {
+        "out_dtype": "", 
+        "units": "33"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [100, 127]
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "132", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [95, 33]
+    }, 
+    {
+      "type_key": "relay.attrs.BiasAddAttrs", 
+      "attrs": {"axis": "1"}
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [131, 31]
+    }, 
+    {
+      "type_key": "relay.attrs.SoftmaxAttrs", 
+      "attrs": {"axis": "1"}
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [131]
+    }, 
+    {
+      "type_key": "Array"
+    }, 
+    {
+      "type_key": "FuncType", 
+      "attrs": {
+        "arg_types": "139", 
+        "ret_type": "131", 
+        "span": "0", 
+        "type_constraints": "153", 
+        "type_params": "152"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [5, 140, 146, 25, 149]
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "141", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [142, 143, 144, 145]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "64"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "64"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "3"
+      }
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "3"
+      }
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "147", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [148]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "64"
+      }
+    }, 
+    {
+      "type_key": "relay.TensorType", 
+      "attrs": {
+        "dtype": "float32", 
+        "shape": "150", 
+        "span": "0"
+      }
+    }, 
+    {
+      "type_key": "Array", 
+      "data": [151]
+    }, 
+    {
+      "type_key": "IntImm", 
+      "attrs": {
+        "dtype": "int32", 
+        "value": "10"
+      }
+    }, 
+    {
+      "type_key": "Array"
+    }, 
+    {
+      "type_key": "Array"
+    }
+  ], 
+  "b64ndarrays": [
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAAAAAAIgAQAEAAAAAAAAAAAAgD8=", 
+    "P6G0lvBAXt0AAAAAAAAAAAEAAAAAAAAAAAAAAAIgAQAEAAAAAAAAAAAAgD8="
+  ], 
+  "attrs": {"tvm_version": "0.7.dev1"}
+}

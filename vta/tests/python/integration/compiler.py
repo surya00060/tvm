@@ -21,11 +21,13 @@ from vta import program_fpga, reconfig_runtime
 import vta.testing
 from vta.testing import simulator
 
-from mapper2 import *
+from mapper2 import mapper
 
 import re
 
 import tvm.relay.backend.graph_runtime_codegen
+
+import ops
 
 env = vta.get_env()
 
@@ -57,41 +59,29 @@ def get_network(name, batch_size):
     input_shape =  [1, 64, 64, 64]
     output_shape = (batch_size, 10)
 
-    if "resnet" in name:
-        n_layer = int(name.split('-')[1])
-        mod, params = relay.testing.resnet.get_workload(num_layers=n_layer, batch_size=batch_size, dtype=dtype)
-    elif "vgg" in name:
-        n_layer = int(name.split('-')[1])
-        mod, params = relay.testing.vgg.get_workload(num_layers=n_layer, batch_size=batch_size, dtype=dtype)
-    elif name == 'mobilenet':
-        mod, params = relay.testing.mobilenet.get_workload(batch_size=batch_size, dtype=dtype)
-    elif name == 'squeezenet_v1.1':
-        mod, params = relay.testing.squeezenet.get_workload(batch_size=batch_size, version='1.1', dtype=dtype)
-    elif name == 'inception_v3':
-        input_shape = (1, 3, 299, 299)
-        mod, params = relay.testing.inception_v3.get_workload(batch_size=batch_size, dtype=dtype)
-    elif name == 'mxnet':
-        # an example for mxnet model
-        model = Net().eval()
-        input_shape = [1, 64, 64, 64]
-        input_data = torch.randn(input_shape)
-        scripted_model = torch.jit.trace(model, input_data).eval()
-        input_name = 'input0'
-        shape_list = [(input_name, input_data.shape)]
-        mod, params = relay.frontend.from_pytorch(scripted_model,
-                                          shape_list)        
-        net = mod["main"]
-        
+    # an example for mxnet model
+    model = Net().eval()
+    input_shape = [1, 64, 64, 64]
+    input_data = torch.randn(input_shape)
+    scripted_model = torch.jit.trace(model, input_data).eval()
+    input_name = 'input0'
+    shape_list = [(input_name, input_data.shape)]
+    mod, params = relay.frontend.from_pytorch(scripted_model,
+                                        shape_list)      
 
-        net = relay.Function(net.params, net.body, None, net.type_params, net.attrs)
-        #mod = tvm.IRModule.from_expr(net)
-    else:
-        raise ValueError("Unsupported network: " + name)
+    '''  
+    net = mod["main"]
+    
 
-    return mod, params, input_shape, output_shape,net
+    net = relay.Function(net.params, net.body, None, net.type_params, net.attrs)
+    #mod = tvm.IRModule.from_expr(net)
+
+    '''
+
+    return mod, params, input_shape, output_shape
 
 
-def parse_conv(t):
+def parse(t):
     #print(t)
     N,C,H,W = t.args[0][1]
 
@@ -110,27 +100,13 @@ def parse_conv(t):
 
     return N,C,H,W,R,S,M,E,F,Sx,Sy,pad_l,pad_r,pad_t,pad_b
 
-def parse_dense(t):
-    print(t.args[1][1])
 
-    N,_ = t.args[0][1]
-    M,K = t.args[1][1]
-
-    return N,M,K
-
-
-
-class RelayTensor:
-    def __init__(self,name,size,dependencies = None,op = None,dram_addr = 0):
-        self.name = name
-        self.size = size
-
-        self.dram_addr = dram_addr
-
-        self.dependencies =dependencies
-        self.op = op
 
     
+
+    
+
+''' 
 def parse_inputs(inp):
     elem = inp.split(":")
     print(elem)
@@ -142,8 +118,6 @@ def parse_inputs(inp):
     size.append(x) 
     return elem[0] 
 
-
-'''
 def generate_graph(mod,params,data_shape,out_shape):
     #Break the relay code down into a list
     ir = str(mod["main"]).split('\n')
@@ -159,18 +133,7 @@ def generate_graph(mod,params,data_shape,out_shape):
             continue
         nodes.append(parse_inputs(i))
         #print(i)
-
-    
-
-
     input_to_net  =  ir[0]
-
-
-
-        
-
-    
-
     return 0,0,0,0,0
 '''
 
@@ -178,22 +141,15 @@ def generate_graph(mod,params,data_shape,out_shape):
 
 def convert_to_ops(mod,params,data_shape,out_shape):
     nodes = []
-    node_index_when_last_used = []
 
     #First lets add the input nodes 
 
-    task_conv = autotvm.task.extract_from_program(mod["main"], target=target,
-                                        params=params,
-                                        ops=(relay.op.get("nn.conv2d"),))
-
-    
-
-    print(params.keys())
+    print(params.keys)
 
     for k in params.keys():
-        nodes.append(RelayTensor(k,params[k].shape))
+        nodes.append(RelayNode(k,params[k].shape))
 
-    nodes.append(RelayTensor("input0",data_shape))
+    nodes.append(RelayNode("input0",data_shape))
 
     ir = mod["main"]
 
@@ -212,27 +168,61 @@ def convert_to_ops(mod,params,data_shape,out_shape):
     return 
 
 
+def foo(x):
+    print(x.__class__)
 
+    
+
+    return
 
 
 
 def tune_and_evaluate():
     # extract workloads from relay program
     print("Extract tasks...")
-    mod, params, data_shape, out_shape,net = get_network("mxnet",1)
+    mod, params, data_shape, out_shape = get_network("mxnet",1)
 
+    
     print(mod["main"])
+
+    net = mod["main"]
+
+    net = relay.Function(net.params, net.body, None, net.type_params, net.attrs)
+
+    print("Analysis Time ")
+    print(tvm.relay.analysis.post_order_visit(net,foo))
+
+    exit()
+
+    with tvm.relay.build_config(opt_level=0):
+        gr, mod, params = relay.build(mod,"llvm",params = params)
+
+    '''
+    print(gr)
+    for k in params.keys():
+        print(k," : ")
+        print(params[k].shape)
+    print(mod.type_key)
+    '''
+    exit()
+    convert_to_ops(mod, params, data_shape, out_shape)
+
+    exit()
     tasks = autotvm.task.extract_from_program(mod["main"], target=target,
                                               params=params,
-                                              ops=(relay.op.get("nn.conv2d"),))
+                                              ops=(relay.op.get("nn.adaptive_max_pool2d"),))
 
-    #print(tasks)
+    print(tasks)
+
+
+    
+    exit()
 
     env = vta.get_env()
-    '''
+       
     for t in tasks:
         with env.target: 
-            N,C,H,W,R,S,M,E,F,Sx,Sy,Pxl,Pxr,Pyt,Pyb = parse_conv(t)
+            N,C,H,W,R,S,M,E,F,Sx,Sy,Pxl,Pxr,Pyt,Pyb = parse(t)
             print("N : ",N)
             print("C : ",C)
             print("H : ",H)
@@ -261,19 +251,21 @@ def tune_and_evaluate():
 
             print(t.config_space.__len__())
             #print(t)
-            for i in range(t.config_space.__len__() - 10,t.config_space.__len__()):
+            
+            best_time = 1e9
+            for i in range(t.config_space.__len__()):
                 d = t.config_space.get(i).to_json_dict()['entity']
                 print(d)
                 tile_C = [C//d[0][-1][-1],d[0][-1][-1]]
                 tile_M = [M//d[1][-1][-1],d[1][-1][-1]]
                 tile_E = [E//d[2][-1][-1],d[2][-1][-1]]
                 tile_F = [F//d[3][-1][-1],d[3][-1][-1]]
-                
+                '''
                 print("tile_C : ",tile_C)
                 print("tile_M : ",tile_M)
                 print("tile_E : ",tile_E)
                 print("tile_F : ",tile_F)
-                
+                '''
                 TileParams = [tile_C,tile_E,tile_F,tile_M]
                 lowered,validity = mapper(ConvParams,TileParams,"conv")
                 if(validity == 0): 
@@ -281,49 +273,21 @@ def tune_and_evaluate():
 
             
             exit()
+            '''
             s, args = t.instantiate(t.config_space.get(4))
             #print(s)
             print(args[0].shape)
             print(args[1])
             print(args[2])
+
+            '''
+
             
 
 
             #print(tvm.lower(s, args, simple_mode=True))
             
-    '''
-    tasks = autotvm.task.extract_from_program(mod["main"], target=target,
-                                              params=params,
-                                              ops=(relay.op.get("nn.dense"),))
-
-    print(tasks)
-
-    for t in tasks:
-        with env.target:
-            N,M,K = (parse_dense(t))
-            print("N :" , N)        # N ==== TILE Y
-            print("M :" , M)        # M ==== TILE X
-            print("K :" , K)        # K ==== TILE K
-            print(t.config_space)
-
-            for i in range(t.config_space.__len__()):
-                d = t.config_space.get(i).to_json_dict()['entity']
-                print(d[0])
-                
-                tile_N = [N//d[0][-1][-1],d[0][-1][-1]]
-                tile_M = [M//d[1][-1][-1],d[1][-1][-1]]
-                tile_K = [K//d[2][-1][-1],d[2][-1][-1]]
-
-                tile_params = [tile_N,tile_M,tile_K]
-                dense_params = [N,M,K]
-                lowered,validity = mapper_dense(dense_params,tile_params,"dense")
-
-
-                if(validity == 0):
-                    continue
-                
-
-
+        
     exit()
 
 

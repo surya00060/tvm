@@ -68,10 +68,7 @@ def gen_compute_instr(  input  = 0,
 
 
 
-
-def mapper(ConvParams, TileParams,op):
-    assert op == "conv"
-    #TEMPORARY CODE End
+def mapper_conv2d(ConvParams, TileParams):
     print(TileParams, ConvParams)
     N,C,H,W             = ConvParams[0]
     R,S,M               = ConvParams[1]
@@ -173,7 +170,7 @@ def mapper(ConvParams, TileParams,op):
             code[i]['push_next_dep'] = 1
             code[i+1]['pop_prev_dep'] = 1 #Obvious
 
-    return code
+    return code,1
 
                             #    Load input [
                             #               N,
@@ -184,6 +181,85 @@ def mapper(ConvParams, TileParams,op):
 
 
 
+def mapper(ConvParams,TileParams,op):
+    if(op == "conv"):
+        return mapper_conv2d(ConvParams,TileParams)
+
+
+def mapper_dense(DenseParams,TileParams,op):
+    assert op == "dense"
+    N,M,K  = DenseParams
+    N1,N2 = TileParams[0]
+    M1,M2 = TileParams[1]
+    K1,K2 = TileParams[2]
+
+    NUM_ROWS = 64
+    NUM_COLS = 64
+
+    WEIGHT_BUFFER_SIZE = 1e6
+
+    INPUT_BUFFER_SIZE = 1e6
+
+    OUTPUT_BUFFER_SIZE = 1e6
+
+    code  = []
+
+    if(M2 > NUM_COLS):
+        return [], 0
+    if(K2 > NUM_ROWS):
+        return [], 0
+    if(M2*N2 > OUTPUT_BUFFER_SIZE):
+        return [],0
+    if(N2*K2 > INPUT_BUFFER_SIZE):
+        return [],0
+
+     
+    curr_layer_DRAM_weight_ptr = 0
+    curr_layer_DRAM_input_ptr = 0
+    curr_layer_DRAM_output_ptr = 0
+
+    SRAM_weight_base = 0
+
+    SRAM_input_base = 0
+
+    SRAM_output_base = 0
+
+    for n1 in range(N1):
+        for m1 in range(M1):
+            for k1 in range(K1):
+                # Load inputs
+                # Assuming N,CHW
+
+                curr_input_ptr = curr_layer_DRAM_input_ptr + n1*N2*K + k1*K2
+                load_input = gen_load_instr(DRAM=curr_input_ptr,SRAM=SRAM_input_base,Z_SIZE= K2,Y_SIZE = N2, X_SIZE=1) # Not sure about X,Y,Z Here
+                code.append(load_input)
+                # Load Weights
+                # Assuming CHW, M (Similar to RSCM) 
+                curr_weight_ptr = curr_layer_DRAM_weight_ptr + k1*K2*M + m1*M2
+                load_weight = gen_load_instr(DRAM=curr_weight_ptr,SRAM=SRAM_weight_base,Z_SIZE= M2,Y_SIZE = K2, X_SIZE=1) # Not sure about X,Y,Z Here
+                code.append(load_input)
+
+                compute_instr = gen_compute_instr(input=SRAM_input_base,output = SRAM_output_base,weight = SRAM_weight_base,H=1,W =N2,Stride=[1,1],Pad = [0,0,0,0],preload = (m1==0)) 
+                code.append(compute_instr)# May have to change H,W in the previous line, depending on the parser. 
+
+
+            # Store Outputs N, M
+            curr_output_ptr = curr_layer_DRAM_output_ptr + n1*N2*M + m1*M2  
+            store_output = gen_store_instr(DRAM=curr_output_ptr,SRAM = SRAM_output_base,Z_SIZE=M2,Y_SIZE=N2,X_SIZE=1) # Not sure about X,Y,Z Here
+            code.append(store_output)
+
+                # COmpute systolic
+    for i in range((len(code)-1)):
+        if code[i]['type'] == 'load' and code[i+1]['type'] == 'compute':
+            code[i]['push_next_dep'] = 1
+            code[i+1]['pop_prev_dep'] = 1 #Obvious
+        
+        elif code[i]['type'] == 'compute' and code[i+1]['type'] == 'store':
+            code[i]['push_next_dep'] = 1
+            code[i+1]['pop_prev_dep'] = 1 #Obvious
+
+    return code,1
+                 
 
 
 
